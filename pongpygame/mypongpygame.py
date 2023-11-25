@@ -88,18 +88,22 @@ while game_loop:
             bounce_sound_effect.play()
 
         # ball collision with the player 1 's paddle
-        if ball_x < 100:
-            if player_1_y < ball_y + 25:
-                if player_1_y + 150 > ball_y:
-                    ball_dx *= -1
-                    bounce_sound_effect.play()
+        if 50 < ball_x < 100:
+            if player_1_y < ball_y + 20 and player_1_y + 150 > ball_y:
+                ball_dx *= -1
+                bounce_sound_effect.play()
+            elif (player_1_y == ball_y + 20) or (player_1_y + 150 == ball_y):
+                ball_dy *= -1
+                bounce_sound_effect.play()
 
         # ball collision with the player 2 's paddle
-        if ball_x > 1160:
-            if player_2_y < ball_y + 25:
-                if player_2_y + 150 > ball_y:
-                    ball_dx *= -1
-                    bounce_sound_effect.play()
+        if 1160 < ball_x < 1230:
+            if (player_2_y < ball_y + 25) and (player_2_y + 150 > ball_y):
+                ball_dx *= -1
+                bounce_sound_effect.play()
+            elif ball_x > 50 and ((player_2_y == ball_y + 20) or (player_2_y + 150 == ball_y)):
+                ball_dy *= -1
+                bounce_sound_effect.play()
 
         # scoring points
         if ball_x < -50:
