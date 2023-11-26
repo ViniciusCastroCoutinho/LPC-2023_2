@@ -46,6 +46,7 @@ ball_x = 640
 ball_y = 360
 ball_dx = 5
 ball_dy = 5
+speed_max = 23
 
 
 def reset_ball():
@@ -57,6 +58,18 @@ def reset_ball():
     ball_dy *= -1
     ball_dx *= -1
     scoring_sound_effect.play()
+
+
+def speed_ball(ball_d):
+    global speed_max
+    if abs(ball_d) < speed_max:
+        ball_d *= -1.11
+    else:
+        if ball_d > 0:
+            ball_d = -speed_max
+        else:
+            ball_d = speed_max
+    return ball_d
 
 
 # score
@@ -100,25 +113,25 @@ while game_loop:
             bounce_sound_effect.play()
 
         # ball collision with the player 1 's paddle
+        # x-axis
+        if 85 - speed_ball(ball_dx) < ball_x < 100:
+            if player_1_y < ball_y + 20 < player_1_y + 150:
+                ball_dx = speed_ball(ball_dx)
+                bounce_sound_effect.play()
+
         # y-axis
-        if 30 < ball_x < 80 - ball_dx:
+        if 30 < ball_x < 80 - speed_ball(ball_dx):
             if player_1_move_up and player_1_y < ball_y <= player_1_y + 20 + ball_dy:
                 ball_y -= (ball_dy + 15)
-                ball_dy *= -1
+                ball_dy = speed_ball(ball_dy)
                 bounce_sound_effect.play()
             elif player_1_move_down and player_1_y + 150 >= ball_y + 20 >= player_1_y + 130 - ball_dy:
                 ball_y += (ball_dy + 15)
-                ball_dy *= -1
+                ball_dy = speed_ball(ball_dy)
                 bounce_sound_effect.play()
         elif 30 < ball_x < 100:
             if player_1_y == ball_y + 25 or player_1_y + 155 == ball_y:
-                ball_dy *= -1
-                bounce_sound_effect.play()
-
-        # x-axis
-        if 85 - ball_dx < ball_x < 100:
-            if player_1_y < ball_y + 20 < player_1_y + 150:
-                ball_dx *= -1
+                ball_dy = speed_ball(ball_dy)
                 bounce_sound_effect.play()
 
         # ball collision with the player 2 's paddle
@@ -126,20 +139,20 @@ while game_loop:
         if 1180 + ball_dx < ball_x < 1230:
             if player_1_move_up and player_1_y < ball_y <= player_1_y + 20 + ball_dy:
                 ball_y -= (ball_dy + 15)
-                ball_dy *= -1
+                ball_dy = speed_ball(ball_dy)
                 bounce_sound_effect.play()
             elif player_1_move_down and player_1_y + 150 >= ball_y + 20 >= player_1_y + 130 - ball_dy:
                 ball_y += (ball_dy + 15)
-                ball_dy *= -1
+                ball_dy = speed_ball(ball_dy)
                 bounce_sound_effect.play()
         elif 1160 + ball_dx < ball_x < 1230:
             if player_1_y == ball_y + 25 or player_1_y + 155 == ball_y:
-                ball_dy *= -1
+                ball_dy = speed_ball(ball_dy)
                 bounce_sound_effect.play()
         # x-axis
         if 1160 < ball_x < 1175 + ball_dx:
             if player_2_y < ball_y + 20 and player_2_y + 150 > ball_y:
-                ball_dx *= -1
+                ball_dx = speed_ball(ball_dx)
                 bounce_sound_effect.play()
 
         # scoring points
