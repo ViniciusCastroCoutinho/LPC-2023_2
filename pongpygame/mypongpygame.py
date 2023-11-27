@@ -27,7 +27,7 @@ victory_text = victory_font .render('VICTORY', True, COLOR_WHITE, COLOR_BLACK)
 victory_text_rect = score_text.get_rect()
 victory_text_rect.center = (450, 350)
 
-#defeat text
+# defeat text
 defeat_font = pygame.font.Font('assets/PressStart2P.ttf', 100)
 defeat_text = defeat_font .render('DEFEAT', True, COLOR_WHITE, COLOR_BLACK)
 defeat_text_rect = score_text.get_rect()
@@ -50,11 +50,13 @@ paddle_part_height = paddle_height / 15
 # player 2 - robot
 player_2 = pygame.image.load("assets/player.png")
 player_2_y = 300
+player_2_moving = False
+ai_reaction = False
 
 # ball
 ball = pygame.image.load("assets/ball.png")
 ball_x = 640
-ball_y = random.randint(1,360)
+ball_y = random.randint(1, 360)
 ball_dx = 5
 ball_dy = 5
 speed_max = 25
@@ -63,9 +65,9 @@ speed_max = 25
 def reset_ball():
     global ball_x, ball_y, ball_dx, ball_dy
     ball_x = 640
-    ball_y = random.randint(1,360)
-    ball_dx = random.choice([-1,1]) * 5
-    ball_dy = random.choice([-1,1]) * 5
+    ball_y = random.randint(1, 360)
+    ball_dx = random.choice([-1, 1]) * 5
+    ball_dy = random.choice([-1, 1]) * 5
     ball_dy *= -1
     ball_dx *= -1
     scoring_sound_effect.play()
@@ -212,15 +214,26 @@ while game_loop:
 
         # player 2 "Artificial Intelligence"
         if ball_dx < 0:
-            if player_2_y < 300:
-                player_2_y += 5
-            elif player_2_y > 300:
-                player_2_y -= 5
+            ai_reaction = False
+            if not player_2_moving:
+                if random.randint(0, 99) < 5:
+                    player_2_moving = True
+            else:
+                if player_2_y < 300:
+                    player_2_y += 5
+                elif player_2_y > 300:
+                    player_2_y -= 5
         else:
-            if ball_y > player_2_y + 75:
-                player_2_y += 5
-            elif ball_y < player_2_y + 75:
-                player_2_y -= 5
+            if not ai_reaction:
+                if random.randint(0, 99) < 5:
+                    ai_reaction = True
+            else:
+                if player_2_y + 80 > ball_y > player_2_y + 70:
+                    pass
+                elif ball_y > player_2_y + 75:
+                    player_2_y += 5
+                elif ball_y < player_2_y + 75:
+                    player_2_y -= 5
         if player_2_y <= 0:
             player_2_y = 0
         elif player_2_y >= 570:
@@ -234,7 +247,7 @@ while game_loop:
         screen.blit(player_1, (50, player_1_y))
         screen.blit(player_2, (1180, player_2_y))
         screen.blit(score_text, score_text_rect)
-    elif score_1 == SCORE_MAX :
+    elif score_1 == SCORE_MAX:
         # drawing victory
         screen.fill(COLOR_BLACK)
         screen.blit(score_text, score_text_rect)
@@ -244,7 +257,6 @@ while game_loop:
         screen.fill(COLOR_BLACK)
         screen.blit(score_text, score_text_rect)
         screen.blit(defeat_text, defeat_text_rect)
-
 
     # update screen
     pygame.display.flip()
