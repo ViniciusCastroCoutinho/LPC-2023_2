@@ -2,13 +2,14 @@
 # 2022
 
 import pygame
+import random
 
 pygame.init()
 
 COLOR_BLACK = (0, 0, 0)
 COLOR_WHITE = (255, 255, 255)
 
-SCORE_MAX = 100
+SCORE_MAX = 3
 
 size = (1280, 720)
 screen = pygame.display.set_mode(size)
@@ -36,6 +37,10 @@ player_1_y = 300
 player_1_move_up = False
 player_1_move_down = False
 
+# paddle height and parts
+paddle_height = 150
+paddle_part_height = paddle_height / 15
+
 # player 2 - robot
 player_2 = pygame.image.load("assets/player.png")
 player_2_y = 300
@@ -43,18 +48,18 @@ player_2_y = 300
 # ball
 ball = pygame.image.load("assets/ball.png")
 ball_x = 640
-ball_y = 360
+ball_y = random.randint(1,360)
 ball_dx = 5
 ball_dy = 5
-speed_max = 23
+speed_max = 25
 
 
 def reset_ball():
     global ball_x, ball_y, ball_dx, ball_dy
     ball_x = 640
-    ball_y = 360
-    ball_dx = 5
-    ball_dy = 5
+    ball_y = random.randint(1,360)
+    ball_dx = random.choice([-1,1]) * 5
+    ball_dy = random.choice([-1,1]) * 5
     ball_dy *= -1
     ball_dx *= -1
     scoring_sound_effect.play()
@@ -115,9 +120,15 @@ while game_loop:
         # ball collision with the player 1 's paddle
         # x-axis
         if 85 - speed_ball(ball_dx) < ball_x < 100:
-            if player_1_y < ball_y + 20 < player_1_y + 150:
-                ball_dx = speed_ball(ball_dx)
-                bounce_sound_effect.play()
+            for i in range(15):
+                if player_1_y + i * paddle_part_height < ball_y + 20 < player_1_y + (i + 1) * paddle_part_height:
+                    if i == 7:
+                        ball_dy = 0
+                    else:
+                        ball_dy = i - 7
+                    ball_dx = speed_ball(ball_dx)
+                    bounce_sound_effect.play()
+                    break
 
         # y-axis
         if 30 < ball_x < 80 - speed_ball(ball_dx):
@@ -151,9 +162,15 @@ while game_loop:
                 bounce_sound_effect.play()
         # x-axis
         if 1160 < ball_x < 1175 + ball_dx:
-            if player_2_y < ball_y + 20 and player_2_y + 150 > ball_y:
-                ball_dx = speed_ball(ball_dx)
-                bounce_sound_effect.play()
+            for i in range(15):
+                if player_2_y + i * paddle_part_height < ball_y + 20 < player_2_y + (i + 1) * paddle_part_height:
+                    if i == 7:
+                        ball_dy = 0
+                    else:
+                        ball_dy = i - 7
+                    ball_dx = speed_ball(ball_dx)
+                    bounce_sound_effect.play()
+                    break
 
         # scoring points
         if ball_x < -50:
