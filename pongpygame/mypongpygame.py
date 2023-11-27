@@ -27,6 +27,12 @@ victory_text = victory_font .render('VICTORY', True, COLOR_WHITE, COLOR_BLACK)
 victory_text_rect = score_text.get_rect()
 victory_text_rect.center = (450, 350)
 
+#defeat text
+defeat_font = pygame.font.Font('assets/PressStart2P.ttf', 100)
+defeat_text = defeat_font .render('DEFEAT', True, COLOR_WHITE, COLOR_BLACK)
+defeat_text_rect = score_text.get_rect()
+defeat_text_rect.center = (506, 350)
+
 # sound effects
 bounce_sound_effect = pygame.mixer.Sound('assets/bounce.wav')
 scoring_sound_effect = pygame.mixer.Sound('assets/258020__kodack__arcade-bleep-sound.wav')
@@ -228,11 +234,17 @@ while game_loop:
         screen.blit(player_1, (50, player_1_y))
         screen.blit(player_2, (1180, player_2_y))
         screen.blit(score_text, score_text_rect)
-    else:
+    elif score_1 == SCORE_MAX :
         # drawing victory
         screen.fill(COLOR_BLACK)
         screen.blit(score_text, score_text_rect)
         screen.blit(victory_text, victory_text_rect)
+    elif score_2 == SCORE_MAX:
+        # drawing defeat
+        screen.fill(COLOR_BLACK)
+        screen.blit(score_text, score_text_rect)
+        screen.blit(defeat_text, defeat_text_rect)
+
 
     # update screen
     pygame.display.flip()
